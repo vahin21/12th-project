@@ -1,0 +1,1654 @@
+#login
+import time
+from tabulate import tabulate
+from datetime import datetime
+import tkinter as tk
+from tkinter import messagebox            
+import mysql.connector  as ctr
+pas='F'
+class GymManagementApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Login")
+        self.root.overrideredirect(True)
+        self.root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+        self.root.configure(bg='#333333')
+
+        title_frame = tk.Frame(root, bg='#333333')
+        title_label = tk.Label(title_frame, text="GYM MANAGEMENT", bg='#333333', fg='#107dac', font=("ariel", 24, "bold"))
+        author_label = tk.Label(title_frame, text="By Vahin Kumar Singh & Abdullah Kamal", bg='#333333', fg='#107dac')
+
+        self.username_label = tk.Label(root, text="Username:", bg='#333333', fg='#107dac', font=("ariel", 16))
+        self.username_entry = tk.Entry(root, font=("ariel", 16))
+
+        self.password_label = tk.Label(root, text="Password:", bg='#333333', fg='#107dac', font=("ariel", 16))
+        self.password_entry = tk.Entry(root, show="*", font=("ariel", 16))
+
+        self.login_button = tk.Button(root, text="Login", command=self.login, bg='#cc2a36', fg='#333333', font=("ariel", 16))
+        self.create_account_button = tk.Button(root, text="Create Account", command=self.create_account, bg='#cc2a36', fg='#333333', font=("ariel", 16))
+
+        title_frame.pack(pady=20)
+        title_label.grid(row=0, column=0, padx=20)
+        author_label.grid(row=0, column=1, padx=20)
+
+        self.username_label.pack(pady=10)
+        self.username_entry.pack(pady=10)
+        self.password_label.pack(pady=10)
+        self.password_entry.pack(pady=10)
+        self.login_button.pack(pady=10)
+        self.create_account_button.pack(pady=10)
+
+        # Initialize the database connection
+        self.mycon = ctr.connect(host="localhost", user="root", passwd="", database="mysql")
+        self.cur = self.mycon.cursor()
+
+    def login(self):
+        uid = self.username_entry.get()
+        psw = self.password_entry.get()
+        r = "SELECT password FROM accoun WHERE username='%s'" % uid
+        self.cur.execute(r)
+        t = self.cur.fetchall()
+        pas = "F"  # Default to 'F' (False)
+        for i in t:
+            for j in i:
+                if j == psw:
+                    pas = "T"  # Set to 'T' (True)
+                    print("Welcome back", uid)
+                    # Perform any actions you want here before destroying the login window.
+                    # Then, destroy the login window.
+                    self.root.destroy()
+                    # Open the main function within the IDLE environment
+                    self.main()
+                    return
+        if pas == "F":
+            print("Login failed")
+    def create_account(self):
+        nid = self.username_entry.get()
+        npd = self.password_entry.get()
+        self.cur.execute("SELECT username FROM accoun WHERE username = %s", (nid,))
+        t = self.cur.fetchall()
+        if t:
+            print("This username already exists, try another")
+        else:
+            q = "INSERT INTO accoun VALUES (%s, %s)"
+            self.cur.execute(q, (nid, npd))
+            self.mycon.commit()
+            print("Account was created")
+    def main(self):
+        print(" ")
+
+# Create the tkinter application
+root = tk.Tk()
+app = GymManagementApp(root)
+root.mainloop()
+
+            
+#nutrition table                                  
+#for cutiting veg
+tablecv= [["Meal","Main","Side"],["-----","-----","-----"],["Breakfast","Oats","Fresh cut fruits"],
+          ["Lunch"," Whole wheat vegetable wrap","Fresh Curd/  Dry fruits"],["Dinner","Quinoa with grilled veggies"," Mixed fruit juice"]]
+
+# for cutting non veg
+tablecnv = [["Meal","Main","Side"],["-----","-----","-----"],["Breakfast","eggs ","Fresh cut fruits"],
+          ["Lunch","  fish ","Fresh Curd/  Dry fruits"],["Dinner"," prawn"," Mixed fruit juice"]]
+
+#for bulking veg
+tablebv = [["Meal","Main","Side"],["-----","-----","-----"],["Breakfast","bread and peanut ","5 boiled eggs"],
+          ["Lunch"," 3 Bowl dals and 150 gms rice","Protein shake"],["Dinner"," stir fried veggies with baked potato"," Tomato soup"]]
+
+#for bulking non veg
+tablebnv = [["Meal","Main","Side"],["-----","-----","-----"],["Breakfast","prawn and crabs"," salad"],
+          ["Lunch","  750gm chicken curry","Protein shake"],["Dinner"," fish "," Tomato soup"]]
+
+                                                                                             
+#day
+dt=datetime.now()
+def day():
+    d=dt.weekday()
+    week=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    return week[d]
+
+
+#5 minute timer
+import time
+from tkinter import *
+from tkinter import messagebox
+def timer5():
+    root = Tk()
+    root.geometry("300x300")
+    root.title("Workout Countdown")
+    root.configure(bg="black")
+    minute=StringVar()
+    second=StringVar()
+    minute.set("05")
+    second.set("00")
+  
+    minuteEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=minute)
+    minuteEntry.place(x=90,y=20)
+  
+    secondEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=second)
+    secondEntry.place(x=180,y=20)
+    def submit():
+        try:
+            temp =int(5)*60 + int(0)
+        except:
+            print("Please input the right value")
+        while temp >-1:
+            mins,secs = divmod(temp,60)
+            if mins >60:
+                mins = divmod(mins, 60)
+            minute.set("{0:2d}".format(mins))
+            second.set("{0:2d}".format(secs))
+  
+            root.update()
+            time.sleep(1)
+            if (temp == 0):
+                messagebox.showinfo("Time Countdown", "End of workout")
+                root.destroy()
+            temp -= 1
+    btn = Button(root, text='START', bd='20',command= submit)
+    btn.place(x = 130,y = 120)
+    root.mainloop()
+
+
+#1 minute timer
+def timer1():
+    root = Tk()
+    root.geometry("300x300")
+    root.title("Workout Countdown")
+    root.configure(bg="black")
+    minute=StringVar()
+    second=StringVar()
+    minute.set("01")
+    second.set("00")
+  
+    minuteEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=minute)
+    minuteEntry.place(x=90,y=20)
+  
+    secondEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=second)
+    secondEntry.place(x=180,y=20)
+    def submit():
+        try:
+            temp =int(1)*60 + int(0)
+        except:
+            print("Please input the right value")
+        while temp >-1:
+            mins,secs = divmod(temp,60)
+            if mins >60:
+                mins = divmod(mins, 60)
+            minute.set("{0:2d}".format(mins))
+            second.set("{0:2d}".format(secs))
+  
+            root.update()
+            time.sleep(1)
+            if (temp == 0):
+                messagebox.showinfo("Time Countdown", "End of workout")
+                root.destroy()
+            temp -= 1
+    btn = Button(root, text='START', bd='20',command= submit)
+    btn.place(x = 130,y = 120)
+    root.mainloop()
+
+#2 minute timer
+import time
+from tkinter import *
+from tkinter import messagebox
+def timer2():
+    root = Tk()
+    root.geometry("300x300")
+    root.title("Workout Countdown")
+    root.configure(bg="black")
+    minute=StringVar()
+    second=StringVar()
+    minute.set("02")
+    second.set("00")
+  
+    minuteEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=minute)
+    minuteEntry.place(x=90,y=20)
+  
+    secondEntry= Entry(root, width=3, font=("Arial",25,""),
+                   textvariable=second)
+    secondEntry.place(x=180,y=20)
+    def submit():
+        try:
+            temp =int(2)*60 + int(0)
+        except:
+            print("Please input the right value")
+        while temp >-1:
+            mins,secs = divmod(temp,60)
+            if mins >60:
+                mins = divmod(mins, 60)
+            minute.set("{0:2d}".format(mins))
+            second.set("{0:2d}".format(secs))
+  
+            root.update()
+            time.sleep(1)
+            if (temp == 0):
+                messagebox.showinfo("Time Countdown", "End of workout")
+                root.destroy()
+            temp -= 1
+    btn = Button(root, text='START', bd='20',command= submit)
+    btn.place(x = 130,y = 120)
+    root.mainloop()
+
+#cardio workout
+import time
+def Elliptical_machine():
+    print("Elliptical machine:")
+    print("The elliptical machine can provide the cardio benefits of walking or running, with reduced impact on a person’s joints. Elliptical machines are beneficial to those with joint issues, such as arthritis.")
+    print("")
+    print("Starting workout for 5 minutes...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def stair_climber():
+    print("stair climber")
+    print("The stair climber strengthens the lower body. A person using a stair climber should make sure they maintain good posture throughout the exercise.It can take a while to build stamina with a stair climber, and so a person should take their time and focus on increasing the duration of the sets.")
+    print("")
+    print("Starting workout for 5 minutes...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def Exercise_bike():
+    print("Exercise_bike:")
+    print("The exercise bike is useful for people who have joint issues, as it places less stress on the joints than other cardio machines. The exercise bike works the leg muscles, and a person can choose their pace.")
+    print("")
+    print("Starting workout for 5 minutes...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def Treadmill():
+    print("Treadmill:")
+    print("A person using a treadmill is essentially running but with less impact on their joints. The treadmill is also easily adjustable for each individual’s needs.A person using a treadmill should start at a pace that suits their fitness leve")
+    print("")
+    print("Starting workout for 10 minutes...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def Rowing_machine():
+    print("Rowing machine:")
+    print("The rowing machine offers a total body workout. Additionally, it has the benefit of being impact free, and it does not involve bearing weight.")
+    print("")
+    print("Starting workout for 5 minutes...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def Squat_jumps():
+    print("Squat jumps:")
+    print("Squat jumps involve the same movements as a regular squat, with the addition of a jump. Squat jumps target the buttocks, thighs, and hamstrings. Squats also help increase flexibility of the knee, hip, and ankle joints.")
+    print("")
+    print("Starting workout for 12 reps- 3sets...")
+    print("Start Workout:")
+    for i in range (1,5*60):
+        time.sleep(1)
+        print(i,"seconds have passed")
+    print("End of workout")
+
+def Burpees():
+    print("Bureeps:")
+    print("Burpees are an intense exercise, as they use the arms, legs, and core.")
+    print("")
+    print("Starting workout for 12 reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Jump_rope():
+    print("Jump rope:")
+    print("Jump rope is an effective form of cardio exercise. Jumping rope strengthens calf muscles and improves the elasticity of surrounding tendons and connective tissue. Jump rope also uses the arm muscles, as well as the muscles of the abdomen.")
+    print("")
+    print("Starting workout for 50 reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 50 reps")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Jumping_jacks():
+    print("Jumping jacks:")
+    print("Jumping jacks involve the entire body and are a good way to work the heart, lungs, and muscles in one exercise.")
+    print("")
+    print("Starting workout for 50reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 50 reps")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#cardio function
+def cardio():
+    print(".................CARDIO..................")
+    print("choose any 2 cardio workout for the day:")
+    print("1.elliptical")
+    print("2.stair climber")
+    print("3.exercise bike")
+    print("4.treadmill")
+    print("5.rowing machine")
+    print("6.squat jumps")
+    print("7.burpees")
+    print("8.jump rope")
+    print("9.jumping jacks")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Elliptical_machine()
+        elif choice==2:
+            stair_climber()
+        elif choice==3:
+            Exercise_bike()
+        elif choice==4:
+            Treadmill()
+        elif choice==5:
+            Rowing_machine()
+        elif choice==6:
+            Squat_jumps()
+        elif choice==7:
+            Burpees()
+        elif choice==8:
+            Jump_rope()
+        elif choice==9:
+            Jumping_jacks()
+        count+=1
+        if count==2:
+            print("You have completed the two workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+#chest workout
+def Flat_bench_press():
+    print("Flat bench press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Incline_bench_press():
+    print("Incline bench press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Decline_bench_press():
+    print("Decline bench press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Cable_crossover():
+    print("Cable crossover:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Chest_dip():
+    print("Chest dip:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Resistance_band_pullover():
+    print("Resistance band pullover:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Incline_push_up():
+    print("Incline push up:")
+    print("")
+    print("Starting workout for 20reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 20reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Chest_fly():
+    print(":")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dumbbel_pullover():
+    print("Dumbbel pullover:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#chest function
+def chest():
+    print(".................CHEST..................")
+    print("Choose any 6 Chest workout for the day:")
+    print("1.Flat bench press")
+    print("2.Incline bench press")
+    print("3.Decline bench press")
+    print("4.Cable crossover")
+    print("5.Chest dip")
+    print("6.Resistance band pullover")
+    print("7.Incline push up")
+    print("8.Chest fly")
+    print("9.Dumbbel pullover")
+    
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Flat_bench_press()
+        elif choice==2:
+            Incline_bench_press()
+        elif choice==3:
+            Decline_bench_press()
+        elif choice==4:
+            Cable_crossover()
+        elif choice==5:
+            Chest_dip()
+        elif choice==6:
+            Resistance_band_pullover()
+        elif choice==7:
+            Incline_push_up()
+        elif choice==8:
+            Chest_fly()
+        elif choice==9:
+            Dumbbel_pullover()
+        count+=1
+        if count==6:
+            print("You have completed the six workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate:")
+
+#back workout
+import time
+def Lat_pulldown():
+    print("Lat pulldown:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Back_extension():
+    print("Back extension:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Suspended_row():
+    print("Suspended row:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Upward_cable_wood_chops():
+    print("Upward cable wood chops:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def bent_knee_good_morning():
+    print("bent-knee good morning:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Quadruped_single_arm_dumbbell_row():
+    print("Quadruped single-arm dumbbell row:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Wide_dumbbell_bent_over_row():
+    print("Wide dumbbell bent-over row:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Resistance_band_pull_apart():
+    print("Resistance band pull-apart:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dead_lift():
+    print("Dead lift:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#back function
+def back():
+    print(".................BACK..................")
+    print("Choose any 5 back workout for the day:")
+    print("1.Lat pulldown")
+    print("2.Back extension")
+    print("3.suspended row")
+    print("4.upward cable wood chop")
+    print("5.Bent-knee good morning")
+    print("6.Quadruped single-arm dumbbell row")
+    print("7.Wide dumbbell bent-over row")
+    print("8.Resistance band pull apart")
+    print("9.Dead lift")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Lat_pulldown()
+        elif choice==2:
+            Back_extension()
+        elif choice==3:
+            Suspended_row()
+        elif choice==4:
+            Upward_cable_wood_chop()
+        elif choice==5:
+            bent_knee_good_morning()
+        elif choice==6:
+            Quadruped_single_arm_dumbbell_row()
+        elif choice==7:
+            Wide_dumbbell_bent_over_row()
+        elif choice==8:
+            Resistance_band_pull_apart()
+        elif choice==9:
+            Dead_lift()
+        count+=1
+        if count==5:
+            print("You have completed the five workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+#Shoulder
+def Dumbbell_front_raise():
+    print("Dumbbell front raise:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dumbbell_lateral_raise():
+    print("Dumbbell lateral raise:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Reverse_fly():
+    print("Reverse fly:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Seated_military_press():
+    print("Seated military press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Standing_dumbbell_shoulder_press():
+    print("Standing dumbbell shoulder press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def One_arm_dumbbell_push_press():
+    print("One-arm dumbbell push press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Plank_dumbbell_shoulder_raise():
+    print("Plank dumbbell shoulder raise:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Standing_Cable_Face_Pull():
+    print("Standing Cable Face Pull:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for each set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Trap_Bar_Shrugs():
+    print("Trap Bar Shrugs:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for each set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#sholder function
+def shoulder():
+    print(".................SHOULDER..................")
+    print("choose any 6 shoulder workout for the day:")
+    print("1.Dumbbell front raise")
+    print("2.Dumbbell lateral raise")
+    print("3.Reverse fly")
+    print("4.Seated military press")
+    print("5.Standing dumbbell shoulder press")
+    print("6.One-arm dumbbell push press")
+    print("7.Plank dumbbell shoulder raise")
+    print("8.Standing Cable Face Pull")
+    print("9.Trap Bar Shrugs")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Dumbbell_front_raise()
+        elif choice==2:
+            Dumbbell_lateral_raise()
+        elif choice==3:
+            Reverse_fly()
+        elif choice==4:
+            Seated_military_press()
+        elif choice==5:
+            Standing_dumbbell_shoulder_press()
+        elif choice==6:
+            One_arm_dumbbell_push_press()
+        elif choice==7:
+            Plank_dumbbell_shoulder_raise()
+        elif choice==8:
+            Standing_Cable_Face_Pull()
+        elif choice==9:
+            Trap_Bar_Shrugs()
+        count+=1
+        if count==6:
+            print("You have completed the six workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+#legs workout
+import time
+def Barbell_Squat():
+    print("Barbell Squat:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Leg_Press():
+    print("Leg Press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Leg_Extensions():
+    print("Leg Extensions:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Leg_Curls():
+    print("Leg Curls:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Romanian_Deadlift():
+    print("Romanian Deadlift:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Standing_Calf_Raises():
+    print("Standing Calf Raises:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dumbbell_Walking_Lunge():
+    print("Dumbbell Walking Lunge:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def barbell_hip_thrust():
+    print("barbell hip thrust:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for each set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#legs function
+def legs():
+    print(".................LEGS..................")
+    print("choose any 5 legs workout for the day:")
+    print("1.Barbell Squat")
+    print("2.Leg Press")
+    print("3.Leg Extensions")
+    print("4.Leg curls")
+    print("5.Romanian Deadlift")
+    print("6.Standing Calf Raises")
+    print("7.Dumbbell Walking Lunge")
+    print("8.barbell hip thrust")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Barbell_Squat()
+        elif choice==2:
+            Leg_Press()
+        elif choice==3:
+            Leg_Extensions()
+        elif choice==4:
+            Leg_Curls()
+        elif choice==5:
+            Romanian_Deadlift()
+        elif choice==6:
+            Standing_Calf_Raises()
+        elif choice==7:
+            Dumbbell_Walking_Lunge()
+        elif choice==8:
+            barbell_hip_thrust()
+        count+=1
+        if count==5:
+            print("You have completed the five workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+#forearms workout
+def Trap_Bar_Deadlift_to_Carry():
+    print("Trap Bar Deadlift to Carry:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Bottoms_Up_Kettlebell_Carry():
+    print("Bottoms-Up Kettlebell Carry:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def EZ_Bar_Reverse_Curl():
+    print("EZ-Bar Reverse Curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#forearms function
+def forearms():
+    print(".................FOREARMS..................")
+    print("choose any 4 forearms workout for the day:")
+    print("1.Trap Bar Deadlift to Carry")
+    print("2.Bottoms-Up Kettlebell Carry")
+    print("3.EZ-Bar Reverse Curl")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Trap_Bar_Deadlift_to_Carry()
+        elif choice==2:
+            Bottoms_Up_Kettlebell_Carry()
+        elif choice==3:
+            EZ_Bar_Reverse_Curl()
+            
+        count+=1
+        if count==4:
+            print("You have completed the four workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+
+
+#abs workout
+import time
+def Cable_Crunch():
+    print("Cable Crunch:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Rowing_Machine_Knee_Tuck():
+    print("Rowing Machine Knee Tuck:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Glute_Hamstring_Developer_Situp():
+    print("Glute Hamstring Developer Situp:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#abs function
+def abs():
+    print(".................ABS..................")
+    print("choose any 4-abs workout for the day:")
+    print("1.cable crunch")
+    print("2.Rowing Machine Knee Tuck")
+    print("3.Glute Hamstring Developer Situp")
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Cable_Crunch()
+        elif choice==2:
+            Rowing_Machine_Knee_Tuck()
+        elif choice==3:
+            Glute_Hamstring_Developer_Situp()
+            
+        count+=1
+        if count==4:
+            print("You have completed the four workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+
+#biceps workout
+def hammer_curl():
+    print("hammer curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def cable_curl():
+    print("cable curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def pull_up():
+    print("pull up:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def biceps_curl():
+    print("biceps curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def barbbell_curl():
+    print("Chest dip:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def incline_dumbbell_curl():
+    print("incline dumbbell curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def bent_over_row():
+    print("bent over row:")
+    print("")
+    print("Starting workout for 20reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 20reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def ez_bar_curl():
+    print("ez bar curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dumbbel_preacher_curl():
+    print("Dumbbel preacher curl:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#biceps function
+def biceps():
+    print(".................BICEPS..................")
+    print("choose any 6 biceps workout for the day:")
+    print("1.hammer curl")
+    print("2.cable curl")
+    print("3.pull up")
+    print("4.biceps curl")
+    print("5.barbbell curl")
+    print("6.incline dumbbell curl")
+    print("7.Bent over row")
+    print("8.Ez bar curl")
+    print("9.Dumbbell preacher curl")
+    
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            hammer_curl()
+        elif choice==2:
+            cable_curl()
+        elif choice==3:
+            pull_up()
+        elif choice==4:
+            biceps_curl()
+        elif choice==5:
+            barbbell_curl()
+        elif choice==6:
+            incline_dumbbell_curl()
+        elif choice==7:
+            bent_over_row()
+        elif choice==8:
+            ez_bar_curl()
+        elif choice==9:
+            Dumbbel_preacher_curl()
+        count+=1
+        if count==6:
+            print("You have completed the six workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+
+#triceps workout
+def Close_Grip_Bench_Press():
+    print("Close-Grip Bench Press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Triceps_Dip():
+    print("Triceps Dip:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Bench_Dip():
+    print("Bench Dip:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Triceps_Machine_Dip():
+    print("Triceps Machine Dip:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Board_Press():
+    print("Board Press:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Dumbbell_Overhead_Triceps_Extension():
+    print("Dumbbell Overhead Triceps Extension:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Cable_Overhead_Extension_with_Rope():
+    print("Cable Overhead Extension with Rope:")
+    print("")
+    print("Starting workout for 20reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 20reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Single_Arm_Cable_Kick_Back():
+    print("Single-Arm Cable Kick-Back:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+def Cable_Push_Down():
+    print("Cable Push-Down:")
+    print("")
+    print("Starting workout for 12reps- 3 sets...")
+    print("Start Workout:")
+    for i in range (1,4):
+        print("Starting set ",i,":")
+        time.sleep(1)
+        print("Set your form and complete 12 reps for the set")
+        input("Press ENTER to continue")
+    print("End of workout")
+
+
+#triceps function
+def triceps():
+    print(".................TRICEPS..................")
+    print("choose any 5 triceps workout for the day:")
+    print("1.Close-Grip Bench Press")
+    print("2.Triceps Dip")
+    print("3.Bench Dip")
+    print("4.Triceps Machine Dip")
+    print("5.Board Press")
+    print("6.Dumbbell Overhead Triceps Extension")
+    print("7.Cable Overhead Extension with Rope")
+    print("8.Single-Arm Cable Kick-Back")
+    print("9.Cable Push-Down")
+
+    
+    ans = "y"
+    count=0
+    while ans=="y" or ans=="Y":
+        choice=int(input("enter the workout you want:"))
+        if choice==1:
+            Close_Grip_Bench_Press()
+        elif choice==2:
+            Triceps_Dip()
+        elif choice==3:
+            Bench_Dip()
+        elif choice==4:
+            Triceps_Machine_Dip()
+        elif choice==5:
+            Board_Press()
+        elif choice==6:
+            Dumbbell_Overhead_Triceps_Extension()
+        elif choice==7:
+            Cable_Overhead_Extension_with_Rope()
+        elif choice==8:
+            Single_Arm_Cable_Kick_Back()
+        elif choice==9:
+            Cable_Push_Down()
+        count+=1
+        if count==5:
+            print("You have completed the five workouts")
+            ans='n'
+        ans=input("Enter Y/y to continue or N/n to terminate: ")
+
+def level():
+    print("Choose your level:")
+    print("(1) Beginner")
+    print("(2) Advanced")
+    l=int(input("Enter your choice: "))
+    global lev
+    if l==1:
+        lev=1
+    elif l==2:
+        lev=2
+    else:
+        print("invalid input")
+    
+#beginner's workout
+def dayworkout1():
+    print("Today's day is ", day())
+    print("Starting workout for your day:")
+    i=day()
+    if i =="Monday":
+        monday1()
+    elif i =="Tuesday":
+        tuesday1()
+    elif i =="Wednesday":
+        wednesday1()
+    elif i =="Thursday":
+        thursday1()
+    elif i =="Friday":
+        friday1()
+    elif i =="Saturday":
+        saturday1()
+    elif i =="Sunday":
+        sunday1()
+
+#advanced workout
+def dayworkout2():
+    print("Today's day is ", day())
+    print("Starting workout for your day:")
+    i=day()
+    if i =="Monday":
+        monday2()
+    elif i =="Tuesday":
+        tuesday2()
+    elif i =="Wednesday":
+        wednsday2()
+    elif i =="Thursday":
+        thursday2()
+    elif i =="Friday":
+        friday2()
+    elif i =="Saturday":
+        saturday2()
+    elif i =="Sunday":
+        sunday2()
+
+#beginners
+def monday1():
+    chest()
+def tuesday1():
+    triceps()
+def wednesday1():
+    back()
+def thursday1():
+    biceps()
+def friday1():
+    shoulder()
+def saturday1():
+    legs()
+def sunday1():
+    print("REST DAY")
+
+#advanced
+def monday2():
+    chest()
+    triceps()
+    cardio()
+def tuesday2():
+    shoulder()
+    legs()
+    cardio()
+def wednesday2():
+    back()
+    biceps()
+    cardio()
+def thursday2():
+    chest()
+    triceps()
+    cardio()
+def friday2():
+    shoulder()
+    legs()
+    cardio()
+def saturday2():
+    back()
+    biceps()
+    cardio()
+def sunday2():
+    abs()
+    forearms()
+    cardio()
+
+#BMI CALCULATOR
+def bmi():
+    m=float(input("Enter mass in Kg: "))
+    h=float(input("Enter height in cm: "))
+    hm=h/100
+    bm=m/(hm*hm)
+    bm=float(round(bm,2))
+    print("Body mass index: ",bm)
+    if bm<18.5:
+        print("Underweight")
+    elif bm>=18.5 and bm<=24.9:
+        print("Healthy weight")
+    elif bm>24.9 and bm<=29.9:
+        print("Overweight")
+    elif bm>29.9:
+        print("Obese")
+
+#RETURN TO MAIN MENU
+ed=1
+def ret():
+    global t
+    q=input("Do you want to go to Main Menu? y/n :")
+    if q.lower()=='y':
+        main()
+        t=1
+    else:
+        t=2
+#CALORIE COUNTER
+def calories():
+    print("Find your required calories:")
+    g=input("Enter your gender m/f")
+    height=int(input("Enter your height in cm"))
+    weight=int(input("Enter your weight in kilograms"))
+    age=int(input("Enter your age"))
+    if g.lower()=="w":
+        bmr=655 + (9.56*weight) + (1.85*height) - (4.7*age)
+    elif g.lower()=="m":
+        bmr=66.5 + (13.75*weight) + (5*height) - (6.75*age)
+    bmr=bmr//1
+    print("Required Calories to burn: ",bmr)
+    print()
+    print("To find the required calories to consume:")
+    print("Select your suitable choice:")
+    print("(1) Sedentary (little or no exercise)")
+    print("(2) Lightly active (exercise 1–3 days/week)")
+    print("(3) Moderately active (exercise 3–5 days/week)")
+    print("(4) Active (exercise 6–7 days/week)")
+    print("(5) Very active (hard exercise 6–7 days/week)")
+    calch=int(input("Enter your choice:"))
+    if calch==1:
+        amr=bmr*1.2
+    elif calch==2:
+        amr=bmr*1.4
+    elif calch==3:
+        amr=bmr*1.55
+    elif calch==4:
+        amr=bmr*1.725
+    elif calch==5:
+        amr=bmr*1.9
+    global cal
+    cal=amr//1
+    print("Required calories for consumption: ",cal)
+
+#BREATHING EXERCISE
+def breathe():
+    print("Welcome to breathing exercise...")
+    time.sleep(1)
+    print("Sit down")
+    time.sleep(1)
+    print("Maintain a straight posture")
+    time.sleep(1)
+    print("Choose a breathing workout for...")
+    print("(1) One Minute")
+    print("(2)Two Minutes")
+    br=int(input("Enter your choice:"))
+    if br==1:
+        for i in range(6):
+            breatheT()
+    elif br==2:
+        for i in range(12):
+            breatheT()
+    elif br==3:
+        for i in range(18):
+            breatheT()
+def breatheT():
+    print("Slowly inhale...")
+    for i in range(1,6):
+        print(i)
+        time.sleep(1)
+    print("Exhale slowly...")
+    time.sleep(5)
+
+def diet():
+    pref=input("Enter 1 for Veg and 2 for Non Veg : ")
+    typ=input("Enter 1 for Cutting and 2 for Bulking : ")
+    if pref==1 and typ==1:
+        print(tabulate(tablecv))
+    elif pref==1 and typ==2:
+        print(tabulate(tablebv))
+    if pref==2 and typ==1:
+        print(tabulate(tablecnv))
+    if pref==2 and typ==2:
+        print(tabulate(tablebnv))
+#main menu
+#Project
+print("WElCOME TO FITNESS MANAGEMENT")
+#MAIN MENU
+def main():
+    print("(1) Check BMI")
+    print("(2) Know your required calories")
+    print("(3) Start your daily workout")
+    print("(4) Start breathing exercise")
+    print("(5) Show diet plans")
+    print("(6) Exit")
+    g=int(input("Enter your choice: "))
+    if g==1:
+        bmi()
+    elif g==2:
+        calories()
+    elif g==3:
+        level()
+        if lev==1:
+            dayworkout1()
+        elif lev==2:
+            dayworkout2()
+    elif g==4:
+        breathe()
+    elif g==5:
+        diet()
+    elif g==6:
+        print("THANK YOU FOR USING FITNESS MANAGEMENT")
+        
+
+#program
+
+if pas=="T":
+    main()
+
+while ed==1:
+    ret()
+    if t==2:
+        ed=2
