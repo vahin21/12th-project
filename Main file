@@ -15,7 +15,7 @@ class GymManagementApp:
         self.root.configure(bg='#333333')
 
         title_frame = tk.Frame(root, bg='#333333')
-        title_label = tk.Label(title_frame, text="GYM MANAGEMENT", bg='#333333', fg='#107dac', font=("ariel", 24, "bold"))
+        title_label = tk.Label(title_frame, text="FITNESS GUIDE", bg='#333333', fg='#107dac', font=("ariel", 24, "bold"))
         author_label = tk.Label(title_frame, text="By Vahin Kumar Singh & Abdullah Kamal", bg='#333333', fg='#107dac')
 
         self.username_label = tk.Label(root, text="Username:", bg='#333333', fg='#107dac', font=("ariel", 16))
