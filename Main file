@@ -240,7 +240,8 @@ def timer2():
 import time
 def Elliptical_machine():
     print("Elliptical machine:")
-    print("The elliptical machine can provide the cardio benefits of walking or running, with reduced impact on a person’s joints. Elliptical machines are beneficial to those with joint issues, such as arthritis.")
+    print("""The elliptical machine can provide the cardio benefits of walking or running, with reduced impact on a person’s joints. Elliptical machines are beneficial to those with joint issues, such as
+          arthritis.""")
     print("")
     print("Starting workout for 5 minutes...")
     print("Start Workout:")
@@ -251,7 +252,8 @@ def Elliptical_machine():
 
 def stair_climber():
     print("stair climber")
-    print("The stair climber strengthens the lower body. A person using a stair climber should make sure they maintain good posture throughout the exercise.It can take a while to build stamina with a stair climber, and so a person should take their time and focus on increasing the duration of the sets.")
+    print("""The stair climber strengthens the lower body. A person using a stair climber should make sure they maintain good posture throughout the exercise.It can take a while to build stamina
+with a stair climber, and so a person should take their time and focus on increasing the duration of the sets.""")
     print("")
     print("Starting workout for 5 minutes...")
     print("Start Workout:")
@@ -262,7 +264,8 @@ def stair_climber():
 
 def Exercise_bike():
     print("Exercise_bike:")
-    print("The exercise bike is useful for people who have joint issues, as it places less stress on the joints than other cardio machines. The exercise bike works the leg muscles, and a person can choose their pace.")
+    print("""The exercise bike is useful for people who have joint issues, as it places less stress on the joints than other cardio machines. The exercise bike works the leg muscles,
+          and a person can choose their pace.""")
     print("")
     print("Starting workout for 5 minutes...")
     print("Start Workout:")
@@ -273,7 +276,8 @@ def Exercise_bike():
 
 def Treadmill():
     print("Treadmill:")
-    print("A person using a treadmill is essentially running but with less impact on their joints. The treadmill is also easily adjustable for each individual’s needs.A person using a treadmill should start at a pace that suits their fitness leve")
+    print("""A person using a treadmill is essentially running but with less impact on their joints. The treadmill is also easily adjustable for each individual’s needs.A person using a treadmill should
+          start at a pace that suits their fitness level""")
     print("")
     print("Starting workout for 10 minutes...")
     print("Start Workout:")
@@ -295,7 +299,8 @@ def Rowing_machine():
 
 def Squat_jumps():
     print("Squat jumps:")
-    print("Squat jumps involve the same movements as a regular squat, with the addition of a jump. Squat jumps target the buttocks, thighs, and hamstrings. Squats also help increase flexibility of the knee, hip, and ankle joints.")
+    print("""Squat jumps involve the same movements as a regular squat, with the addition of a jump. Squat jumps target the buttocks, thighs, and hamstrings. Squats also help increase flexibility
+          of the knee, hip, and ankle joints.""")
     print("")
     print("Starting workout for 12 reps- 3sets...")
     print("Start Workout:")
@@ -319,7 +324,8 @@ def Burpees():
 
 def Jump_rope():
     print("Jump rope:")
-    print("Jump rope is an effective form of cardio exercise. Jumping rope strengthens calf muscles and improves the elasticity of surrounding tendons and connective tissue. Jump rope also uses the arm muscles, as well as the muscles of the abdomen.")
+    print("""Jump rope is an effective form of cardio exercise. Jumping rope strengthens calf muscles and improves the elasticity of surrounding tendons and connective tissue. Jump rope also uses
+          the arm muscles, as well as the muscles of the abdomen.""")
     print("")
     print("Starting workout for 50 reps- 3 sets...")
     print("Start Workout:")
@@ -1544,7 +1550,8 @@ def calories():
     height=int(input("Enter your height in cm"))
     weight=int(input("Enter your weight in kilograms"))
     age=int(input("Enter your age"))
-    if g.lower()=="w":
+    bmr=0
+    if g.lower()=="f":
         bmr=655 + (9.56*weight) + (1.85*height) - (4.7*age)
     elif g.lower()=="m":
         bmr=66.5 + (13.75*weight) + (5*height) - (6.75*age)
@@ -1603,8 +1610,8 @@ def breatheT():
     time.sleep(5)
 
 def diet():
-    pref=input("Enter 1 for Veg and 2 for Non Veg : ")
-    typ=input("Enter 1 for Cutting and 2 for Bulking : ")
+    pref=int(input("Enter 1 for Veg and 2 for Non Veg : "))
+    typ=int(input("Enter 1 for Cutting and 2 for Bulking : "))
     if pref==1 and typ==1:
         print(tabulate(tablecv))
     elif pref==1 and typ==2:
@@ -1652,3 +1659,22 @@ while ed==1:
     ret()
     if t==2:
         ed=2
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+
